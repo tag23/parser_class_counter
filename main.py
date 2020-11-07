@@ -3,6 +3,7 @@ import sys
 import os
 import re
 import configparser
+os.chdir(os.path.dirname(__file__))
 
 config = configparser.ConfigParser()
 config.read('./path_config.ini')
