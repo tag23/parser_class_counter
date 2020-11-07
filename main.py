@@ -1,4 +1,5 @@
 import math
+import sys
 import os
 from os import listdir
 import re
@@ -7,10 +8,11 @@ import configparser
 config = configparser.ConfigParser()
 config.read('./path_config.ini')
 
-path_to_parse = config['PARSER']['GLOBAL_PATH']
+
 class_regex = config['PARSER']['CLASS_REGEX']
 file_extension = config['PARSER']['FILE_EXTENSION']
-
+path_to_parse = sys.argv[1] # config['PARSER']['GLOBAL_PATH']
+project_name = sys.argv[2]
 
 class ABC:
     def __init__(self, lul):
@@ -47,32 +49,31 @@ def get_dir_to_ignore():
 def main():
     dir_list_to_ignore = get_dir_to_ignore()
 
-    for project in listdir(str(path_to_parse)):
-        general_class_count = 0
-        project_size = 0
+    general_class_count = 0
+    project_size = 0
 
-        for path, dir_list, file_list in os.walk(f'{path_to_parse}/{project}', topdown=True):
-            dir_list[:] = [dir_name for dir_name in dir_list if dir_name not in dir_list_to_ignore]
+    for path, dir_list, file_list in os.walk(f'{path_to_parse}/{project_name}', topdown=True):
+        dir_list[:] = [dir_name for dir_name in dir_list if dir_name not in dir_list_to_ignore]
 
-            for file_name in file_list:
-                file_path = os.path.join(path, file_name)
+        for file_name in file_list:
+            file_path = os.path.join(path, file_name)
 
-                if re.search(rf'{file_extension}$', file_name):
-                    with open(f'{path}/{file_name}', 'r') as file:
-                        file_body = file.read()
-                        class_count = len(re.findall(rf'{class_regex}', file_body))
+            if re.search(rf'{file_extension}$', file_name):
+                with open(f'{path}/{file_name}', 'r') as file:
+                    file_body = file.read()
+                    class_count = len(re.findall(rf'{class_regex}', file_body))
 
-                        general_class_count += class_count
-                        print(f'    File named \'{file_name}\' has {class_count} classes')
+                    general_class_count += class_count
+                    print(f'    File named \'{file_name}\' has {class_count} classes')
 
-                    file.close()
+                file.close()
 
-                if not os.path.islink(file_path):
-                    project_size += os.path.getsize(file_path)
+            if not os.path.islink(file_path):
+                project_size += os.path.getsize(file_path)
 
-        project_size = convert_size(project_size)
-        print(f'Project {project} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} '
-              f'size2')
+    project_size = convert_size(project_size)
+    print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} '
+          f'size2')
 
 
 if __name__ == '__main__':
