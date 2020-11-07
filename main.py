@@ -1,7 +1,6 @@
 import math
 import sys
 import os
-from os import listdir
 import re
 import configparser
 
@@ -31,7 +30,7 @@ def convert_size(size_bytes):
     i = int(math.floor(math.log(size_bytes, 1024)))
     p = math.pow(1024, i)
     s = round(size_bytes / p, 2)
-    return {'size': s, 'type': size_name[i]}
+    return {'size': s, 'type': size_name[i], 'bytes': size_bytes}
 
 
 def get_dir_to_ignore():
@@ -59,7 +58,8 @@ def main():
             file_path = os.path.join(path, file_name)
 
             if re.search(rf'{file_extension}$', file_name):
-                with open(f'{path}/{file_name}', 'r') as file:
+                with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
+                    print(f'    File {path}/{file_name} are ready for reading')
                     file_body = file.read()
                     class_count = len(re.findall(rf'{class_regex}', file_body))
 
@@ -72,8 +72,12 @@ def main():
                 project_size += os.path.getsize(file_path)
 
     project_size = convert_size(project_size)
-    print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} '
+    print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
           f'size2')
+
+    with open('result.txt', 'a') as file:
+        file.write(f'{project_name} {general_class_count} {project_size["bytes"]} {project_size["size"]}{project_size["type"]}\n')
+    file.close()
 
 
 if __name__ == '__main__':
