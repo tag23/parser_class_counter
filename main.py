@@ -1,8 +1,11 @@
 import math
 import sys
 import os
+from os import listdir
 import re
 import configparser
+import json
+
 os.chdir(os.path.dirname(__file__))
 
 config = configparser.ConfigParser()
@@ -11,7 +14,7 @@ config.read('./path_config.ini')
 
 class_regex = config['PARSER']['CLASS_REGEX']
 file_extensions = config['PARSER']['FILE_EXTENSION']
-path_to_parse = sys.argv[1] # config['PARSER']['GLOBAL_PATH']
+path_to_parse = sys.argv[1]
 project_name = sys.argv[2]
 
 class ABC:
@@ -52,6 +55,8 @@ def main():
     general_class_count = 0
     project_size = 0
 
+    json_data = {'data': []}
+
     for path, dir_list, file_list in os.walk(f'{path_to_parse}/{project_name}', topdown=True):
         dir_list[:] = [dir_name for dir_name in dir_list if dir_name not in dir_list_to_ignore]
 
@@ -70,6 +75,15 @@ def main():
 
                     file.close()
 
+            if not ('result_data.json' in listdir('./')):
+                with open('result_data.json', 'w') as json_file:
+                    json.dump(json_data, json_file)
+                json_file.close()
+            else:
+                with open('result_data.json', 'r') as json_file:
+                    json_data = json.load(json_file)
+                json_file.close()
+
             if not os.path.islink(file_path):
                 project_size += os.path.getsize(file_path)
 
@@ -77,9 +91,15 @@ def main():
     print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
           f'size2')
 
+    json_data['data'].append([general_class_count, project_size["bytes"]])
+
     with open('result.txt', 'a') as file:
         file.write(f'{project_name} {general_class_count} {project_size["bytes"]} {project_size["size"]}{project_size["type"]}\n')
     file.close()
+
+    with open("result_data.json", "w") as json_file:
+        json.dump(json_data, json_file)
+    json_file.close()
 
 
 if __name__ == '__main__':

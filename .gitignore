@@ -1,4 +1,5 @@
 .vscode
 .idea
 venv
+result_data.json
 result.txt
