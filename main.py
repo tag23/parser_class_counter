@@ -10,7 +10,7 @@ config.read('./path_config.ini')
 
 
 class_regex = config['PARSER']['CLASS_REGEX']
-file_extension = config['PARSER']['FILE_EXTENSION']
+file_extensions = config['PARSER']['FILE_EXTENSION']
 path_to_parse = sys.argv[1] # config['PARSER']['GLOBAL_PATH']
 project_name = sys.argv[2]
 
@@ -58,16 +58,17 @@ def main():
         for file_name in file_list:
             file_path = os.path.join(path, file_name)
 
-            if re.search(rf'{file_extension}$', file_name):
-                with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
-                    print(f'    File {path}/{file_name} are ready for reading')
-                    file_body = file.read()
-                    class_count = len(re.findall(rf'{class_regex}', file_body))
+            for extension in file_extensions.split():
+                if re.search(rf'{extension}$', file_name):
+                    with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
+                        print(f'    File {path}/{file_name} are ready for reading')
+                        file_body = file.read()
+                        class_count = len(re.findall(rf'{class_regex}', file_body))
 
-                    general_class_count += class_count
-                    print(f'    File named \'{file_name}\' has {class_count} classes')
+                        general_class_count += class_count
+                        print(f'    File named \'{file_name}\' has {class_count} classes')
 
-                file.close()
+                    file.close()
 
             if not os.path.islink(file_path):
                 project_size += os.path.getsize(file_path)
