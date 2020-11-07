@@ -72,7 +72,7 @@ def main():
 
         project_size = convert_size(project_size)
         print(f'Project {project} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} '
-              f'size')
+              f'size2')
 
 
 if __name__ == '__main__':
