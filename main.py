@@ -58,11 +58,9 @@ def main():
                     with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
                         print(f'    File {path}/{file_name} are ready for reading')
                         file_body = file.read()
-                        class_count = len(re.findall(rf'{class_regex}', file_body))
-
-                        general_class_count += class_count
-                        print(f'    File named \'{file_name}\' has {class_count} amount')
-
+                        searched_count = len(re.findall(rf'{class_regex}', file_body))
+                        general_class_count += searched_count
+                        print(f'    File named \'{file_name}\' has {searched_count} amount')
                     file.close()
 
             if not ('result_data.json' in listdir('./')):
