@@ -55,13 +55,16 @@ def main():
 
             for extension in file_extensions.split():
                 if re.search(rf'{extension}$', file_name):
-                    with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
-                        print(f'    File {path}/{file_name} are ready for reading')
-                        file_body = file.read()
-                        searched_count = len(re.findall(rf'{class_regex}', file_body))
-                        general_class_count += searched_count
-                        print(f'    File named \'{file_name}\' has {searched_count} amount')
-                    file.close()
+                    try:
+                        with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
+                            print(f'    File {path}/{file_name} are ready for reading')
+                            file_body = file.read()
+                            searched_count = len(re.findall(rf'{class_regex}', file_body))
+                            general_class_count += searched_count
+                            print(f'    File named \'{file_name}\' has {searched_count} amount')
+                        file.close()
+                    except UnicodeDecodeError as ex:
+                        print(f'\'utf-8\' codec can\'t decode something with error: {ex}')
 
             if not ('result_data.json' in listdir('./')):
                 with open('result_data.json', 'w') as json_file:
