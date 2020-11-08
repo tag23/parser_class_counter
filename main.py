@@ -17,16 +17,6 @@ file_extensions = config['PARSER']['FILE_EXTENSION']
 path_to_parse = sys.argv[1]
 project_name = sys.argv[2]
 
-class ABC:
-    def __init__(self, lul):
-        self.lul = lul
-
-
-class ClassA(ABC):
-    def say_hello(self):
-        print(f'Hello {self.lul}')
-
-
 def convert_size(size_bytes):
     if size_bytes == 0:
         return '0B'
@@ -71,7 +61,7 @@ def main():
                         class_count = len(re.findall(rf'{class_regex}', file_body))
 
                         general_class_count += class_count
-                        print(f'    File named \'{file_name}\' has {class_count} classes')
+                        print(f'    File named \'{file_name}\' has {class_count} amount')
 
                     file.close()
 
@@ -88,12 +78,12 @@ def main():
                 project_size += os.path.getsize(file_path)
 
     project_size = convert_size(project_size)
-    print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
+    print(f'Project {project_name} has {general_class_count} amount with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
           f'size2')
 
     json_data['data'].append({
         'name': project_name,
-        'class_count': general_class_count,
+        'count': general_class_count,
         'bytes': project_size['bytes'],
         'size': project_size['size'],
         'type': project_size['type']
