@@ -29,8 +29,8 @@ class ClassA(ABC):
 
 def convert_size(size_bytes):
     if size_bytes == 0:
-        return "0B"
-    size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        return '0B'
+    size_name = ('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB')
     i = int(math.floor(math.log(size_bytes, 1024)))
     p = math.pow(1024, i)
     s = round(size_bytes / p, 2)
@@ -91,13 +91,19 @@ def main():
     print(f'Project {project_name} has {general_class_count} classes with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
           f'size2')
 
-    json_data['data'].append([general_class_count, project_size["bytes"]])
+    json_data['data'].append({
+        'name': project_name,
+        'class_count': general_class_count,
+        'bytes': project_size['bytes'],
+        'size': project_size['size'],
+        'type': project_size['type']
+    })
 
     with open('result.txt', 'a') as file:
         file.write(f'{project_name} {general_class_count} {project_size["bytes"]} {project_size["size"]}{project_size["type"]}\n')
     file.close()
 
-    with open("result_data.json", "w") as json_file:
+    with open('result_data.json', 'w') as json_file:
         json.dump(json_data, json_file)
     json_file.close()
 
