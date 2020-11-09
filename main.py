@@ -55,6 +55,9 @@ def main():
 
             for extension in file_extensions.split():
                 if re.search(rf'{extension}$', file_name):
+                    if not os.path.islink(file_path):
+                        project_size += os.path.getsize(file_path)
+
                     try:
                         with open(f'{path}/{file_name}', 'r', encoding='utf-8') as file:
                             print(f'    File {path}/{file_name} are ready for reading')
@@ -66,6 +69,8 @@ def main():
                     except UnicodeDecodeError as ex:
                         print(f'\'utf-8\' codec can\'t decode something with error: {ex}')
 
+
+
             if not ('result_data.json' in listdir('./')):
                 with open('result_data.json', 'w') as json_file:
                     json.dump(json_data, json_file)
@@ -75,8 +80,7 @@ def main():
                     json_data = json.load(json_file)
                 json_file.close()
 
-            if not os.path.islink(file_path):
-                project_size += os.path.getsize(file_path)
+
 
     project_size = convert_size(project_size)
     print(f'Project {project_name} has {general_class_count} amount with {project_size["size"]}{project_size["type"]} bytes {project_size["bytes"]} '
